@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QWidget" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>960</width>
+    <height>540</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>DANGUI Nouveau v0.0</string>
+  </property>
+  <widget class="QPushButton" name="loadDataButton">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>10</y>
+     <width>93</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Load Data</string>
+   </property>
+   <property name="default">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QScrollArea" name="scrollArea">
+   <property name="geometry">
+    <rect>
+     <x>770</x>
+     <y>20</y>
+     <width>161</width>
+     <height>441</height>
+    </rect>
+   </property>
+   <property name="widgetResizable">
+    <bool>true</bool>
+   </property>
+   <widget class="QWidget" name="scrollAreaWidgetContents">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>159</width>
+      <height>439</height>
+     </rect>
+    </property>
+    <widget class="QListWidget" name="sensorList">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>161</width>
+       <height>441</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>&lt;no item&gt;</string>
+      </property>
+     </item>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="PlotWidget" name="centralPlot" native="true">
+   <property name="geometry">
+    <rect>
+     <x>470</x>
+     <y>20</y>
+     <width>291</width>
+     <height>221</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="selectDataButton">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>10</y>
+     <width>93</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Select Data</string>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="filenameText">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>50</y>
+     <width>281</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+   <property name="html">
+    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;meta charset=&quot;utf-8&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+hr { height: 1px; border-width: 0; }
+li.unchecked::marker { content: &quot;\2610&quot;; }
+li.checked::marker { content: &quot;\2612&quot;; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Segoe UI'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&amp;lt;filename&amp;gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </widget>
+  <widget class="QDoubleSpinBox" name="tStart">
+   <property name="geometry">
+    <rect>
+     <x>470</x>
+     <y>270</y>
+     <width>121</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <double>-1000000.000000000000000</double>
+   </property>
+   <property name="maximum">
+    <double>1000000.000000000000000</double>
+   </property>
+  </widget>
+  <widget class="QDoubleSpinBox" name="tZero">
+   <property name="geometry">
+    <rect>
+     <x>470</x>
+     <y>320</y>
+     <width>121</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <double>-1000000.000000000000000</double>
+   </property>
+   <property name="maximum">
+    <double>1000000.000000000000000</double>
+   </property>
+  </widget>
+  <widget class="QDoubleSpinBox" name="tEnd">
+   <property name="geometry">
+    <rect>
+     <x>470</x>
+     <y>370</y>
+     <width>121</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="minimum">
+    <double>-1000000.000000000000000</double>
+   </property>
+   <property name="maximum">
+    <double>1000000.000000000000000</double>
+   </property>
+  </widget>
+  <widget class="QLabel" name="tStartLabel">
+   <property name="geometry">
+    <rect>
+     <x>470</x>
+     <y>250</y>
+     <width>63</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>T-Start</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="tZeroLabel">
+   <property name="geometry">
+    <rect>
+     <x>470</x>
+     <y>300</y>
+     <width>63</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>T-Zero</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="tEndLabel">
+   <property name="geometry">
+    <rect>
+     <x>470</x>
+     <y>350</y>
+     <width>63</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>T-End</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="setDataButton">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>10</y>
+     <width>93</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Set Data</string>
+   </property>
+   <property name="default">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="saveDataButton">
+   <property name="geometry">
+    <rect>
+     <x>320</x>
+     <y>10</y>
+     <width>93</width>
+     <height>29</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&lt;button&gt;</string>
+   </property>
+   <property name="default">
+    <bool>false</bool>
+   </property>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PlotWidget</class>
+   <extends>QWidget</extends>
+   <header>pyqtgraph</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
