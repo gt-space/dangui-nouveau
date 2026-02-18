@@ -232,7 +232,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="QPlainTextEdit" name="plainTextEdit">
+  <widget class="QPlainTextEdit" name="loxSysBox">
    <property name="geometry">
     <rect>
      <x>90</x>
@@ -251,20 +251,20 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
    </property>
   </widget>
-  <widget class="QLabel" name="LOXSysLabel">
+  <widget class="QLabel" name="sysCdALabel">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>30</x>
      <y>170</y>
-     <width>71</width>
+     <width>61</width>
      <height>20</height>
     </rect>
    </property>
    <property name="text">
-    <string>LOX Sys CdA</string>
+    <string>Sys CdA</string>
    </property>
   </widget>
-  <widget class="QPlainTextEdit" name="plainTextEdit_2">
+  <widget class="QPlainTextEdit" name="fuelSysBox">
    <property name="geometry">
     <rect>
      <x>160</x>
@@ -283,17 +283,81 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
    </property>
   </widget>
-  <widget class="QLabel" name="LOXSysLabel_2">
+  <widget class="QLabel" name="loxLabel">
    <property name="geometry">
     <rect>
-     <x>230</x>
-     <y>170</y>
-     <width>71</width>
+     <x>100</x>
+     <y>150</y>
+     <width>51</width>
      <height>20</height>
     </rect>
    </property>
    <property name="text">
-    <string>Fuel Sys CdA</string>
+    <string>LOX</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="fuelLabel">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>150</y>
+     <width>51</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Fuel</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="sysCdALabel_2">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>190</y>
+     <width>61</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Inj CdA</string>
+   </property>
+  </widget>
+  <widget class="QPlainTextEdit" name="fuelInjBox">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>190</y>
+     <width>61</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="verticalScrollBarPolicy">
+    <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="horizontalScrollBarPolicy">
+    <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="lineWrapMode">
+    <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
+   </property>
+  </widget>
+  <widget class="QPlainTextEdit" name="loxInjBox">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>190</y>
+     <width>61</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="verticalScrollBarPolicy">
+    <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="horizontalScrollBarPolicy">
+    <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="lineWrapMode">
+    <enum>QPlainTextEdit::LineWrapMode::NoWrap</enum>
    </property>
   </widget>
  </widget>
