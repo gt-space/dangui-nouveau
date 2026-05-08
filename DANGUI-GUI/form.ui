@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>DANGUI Nouveau v0.0</string>
   </property>
-  <widget class="QTabWidget" name="calcsTab">
+  <widget class="QTabWidget" name="DANGUI">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -26,7 +26,7 @@
     <bool>false</bool>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="mainTab">
     <attribute name="title">
@@ -677,7 +677,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="tab_2">
+   <widget class="QWidget" name="calcsTab">
     <attribute name="title">
      <string>Calcs</string>
     </attribute>
@@ -1719,6 +1719,11 @@ li.checked::marker { content: &quot;\2612&quot;; }
       <set>Qt::AlignmentFlag::AlignCenter</set>
      </property>
     </widget>
+   </widget>
+   <widget class="QWidget" name="modelTab">
+    <attribute name="title">
+     <string>HETS Fluid Model</string>
+    </attribute>
    </widget>
   </widget>
  </widget>
