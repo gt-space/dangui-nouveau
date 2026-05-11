@@ -13,6 +13,8 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QFileDialog, QPushButton
 from PyQt6 import QtCore
 import pyqtgraph as pg
 
+#test 
+
 QMainWindow, Ui_MainWindow = pg.Qt.loadUiType("DANGUI-GUI/form.ui")
 
 class MainWindow(QMainWindow, Ui_MainWindow):

@@ -1724,6 +1724,122 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <attribute name="title">
      <string>HETS Fluid Model</string>
     </attribute>
+    <widget class="PlotWidget" name="modelPlot" native="true">
+     <property name="geometry">
+      <rect>
+       <x>640</x>
+       <y>30</y>
+       <width>291</width>
+       <height>251</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QListWidget" name="modelPlotList">
+     <property name="geometry">
+      <rect>
+       <x>640</x>
+       <y>300</y>
+       <width>291</width>
+       <height>131</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>&lt;no item&gt;</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QPushButton" name="openPlotButton">
+     <property name="geometry">
+      <rect>
+       <x>640</x>
+       <y>440</y>
+       <width>90</width>
+       <height>29</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Open Plot</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="fuelThrottleButton">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>10</y>
+       <width>90</width>
+       <height>29</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Fuel Throttle</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="oxThrottleButton">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>10</y>
+       <width>90</width>
+       <height>29</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Ox Throttle</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="oxThrottle2Button">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>10</y>
+       <width>161</width>
+       <height>29</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Ox Throttle (2nd Order)</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="dualThrottleButton">
+     <property name="geometry">
+      <rect>
+       <x>390</x>
+       <y>10</y>
+       <width>90</width>
+       <height>29</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Dual Throttle</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="initialLabel">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>50</y>
+       <width>63</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Initial</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="finalLabel">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>240</y>
+       <width>63</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Final</string>
+     </property>
+    </widget>
    </widget>
   </widget>
  </widget>
