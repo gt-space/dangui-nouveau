@@ -27,15 +27,20 @@ class LoadData(QMainWindow, Ui_MainWindow):
         filename = filename[splitno+1:-23]
         self.filenameText.setText(filename)
 
-    def loadData(self):
+    def loadData(self, dataIsSelect):
         global times, headers, data, filename
+        if dataIsSelect == False:
+            print("hold your horses! select a dataset with the Select Data button")
+            return False
+
         if os.path.exists(str(filename)):
             df = pd.read_csv(filename)
+            df['ZZPT(null)'] = 0
             times = df['timestamp']
             times = times - times[0]
 
             data = df.drop(['timestamp'], axis=1)
-            data = data.reindex(sorted(data.columns), axis=1) ## future: list by type of sensor
+            data = data.reindex(sorted(data.columns), axis=1) ## future: list by type of sensor (currently alphabetizes btw)
 
             headers = list(data)
 
@@ -44,8 +49,24 @@ class LoadData(QMainWindow, Ui_MainWindow):
             self.tEnd.setValue(0)
 
             # Make scroll area the list of sensors
+            j = 0 # index for combo box set
             for i in range(len(headers)-1):
-                self.sensorList.addItem(headers[i+1])
+                thisheader = headers[i+1]
+                self.sensorList.addItem(thisheader)
+                if thisheader[-5:] == '(psi)':
+                    j += 1
+                    self.loxDP1Combo.addItem(thisheader)
+                    self.loxDP2Combo.addItem(thisheader)
+                    self.fuelDP1Combo.addItem(thisheader)
+                    self.fuelDP2Combo.addItem(thisheader)
+                    if thisheader == 'OTPT(psi)':
+                        self.loxDP1Combo.setCurrentIndex(j)
+                    if thisheader == 'FTPT(psi)':
+                        self.fuelDP1Combo.setCurrentIndex(j)
+                    if thisheader == 'CHPT1(psi)' or (thisheader == 'CHPT2(psi)' and headers[i] != 'CHPT1(psi)'):
+                        # kinda convoluted, ideally the one before chpt2 is always chpt, unless theres no chpt
+                        self.loxDP2Combo.setCurrentIndex(j)
+                        self.fuelDP2Combo.setCurrentIndex(j)
         else:
             self.filenameText.setText("File does not exist!")
 

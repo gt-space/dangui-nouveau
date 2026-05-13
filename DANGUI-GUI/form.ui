@@ -26,7 +26,7 @@
     <bool>false</bool>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="mainTab">
     <attribute name="title">
@@ -580,7 +580,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
       <string>0.978</string>
      </property>
     </widget>
-    <widget class="QCheckBox" name="checkBox_2">
+    <widget class="QCheckBox" name="checkBox_JetA">
      <property name="geometry">
       <rect>
        <x>210</x>
@@ -595,11 +595,14 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <property name="checked">
       <bool>true</bool>
      </property>
+     <attribute name="buttonGroup">
+      <string notr="true">fuelbuttongroup</string>
+     </attribute>
     </widget>
-    <widget class="QCheckBox" name="checkBox_3">
+    <widget class="QCheckBox" name="checkBox_water">
      <property name="geometry">
       <rect>
-       <x>280</x>
+       <x>270</x>
        <y>140</y>
        <width>92</width>
        <height>25</height>
@@ -608,6 +611,9 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <property name="text">
       <string>Water</string>
      </property>
+     <attribute name="buttonGroup">
+      <string notr="true">fuelbuttongroup</string>
+     </attribute>
     </widget>
     <widget class="QComboBox" name="loxSysCdACombo_2">
      <property name="geometry">
@@ -654,7 +660,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>460</y>
+       <y>470</y>
        <width>251</width>
        <height>20</height>
       </rect>
@@ -667,7 +673,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>480</y>
+       <y>490</y>
        <width>241</width>
        <height>20</height>
       </rect>
@@ -675,6 +681,117 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <property name="text">
       <string>original dangui by Jackson Stahl</string>
      </property>
+    </widget>
+    <widget class="QCheckBox" name="checkBox_LOX">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>170</y>
+       <width>92</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>LOX</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+     <attribute name="buttonGroup">
+      <string notr="true">oxbuttongroup</string>
+     </attribute>
+    </widget>
+    <widget class="QCheckBox" name="checkBox_LN2">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>170</y>
+       <width>92</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>LN2</string>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <attribute name="buttonGroup">
+      <string notr="true">oxbuttongroup</string>
+     </attribute>
+    </widget>
+    <widget class="QCheckBox" name="checkBox_ethanol">
+     <property name="geometry">
+      <rect>
+       <x>330</x>
+       <y>140</y>
+       <width>92</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Ethanol</string>
+     </property>
+     <attribute name="buttonGroup">
+      <string notr="true">fuelbuttongroup</string>
+     </attribute>
+    </widget>
+    <widget class="QCheckBox" name="checkBox_NOX">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>330</x>
+       <y>170</y>
+       <width>92</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>NOX</string>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <attribute name="buttonGroup">
+      <string notr="true">oxbuttongroup</string>
+     </attribute>
+    </widget>
+    <widget class="QCheckBox" name="checkBox_NullFuel">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>140</y>
+       <width>88</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>N/A</string>
+     </property>
+     <attribute name="buttonGroup">
+      <string notr="true">fuelbuttongroup</string>
+     </attribute>
+    </widget>
+    <widget class="QCheckBox" name="checkBox_NullOx">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>170</y>
+       <width>88</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>N/A</string>
+     </property>
+     <attribute name="buttonGroup">
+      <string notr="true">oxbuttongroup</string>
+     </attribute>
     </widget>
    </widget>
    <widget class="QWidget" name="calcsTab">
@@ -699,13 +816,13 @@ li.checked::marker { content: &quot;\2612&quot;; }
       <rect>
        <x>370</x>
        <y>80</y>
-       <width>76</width>
+       <width>101</width>
        <height>21</height>
       </rect>
      </property>
      <item>
       <property name="text">
-       <string>OIPT(psi)</string>
+       <string>&lt;no item&gt;</string>
       </property>
      </item>
     </widget>
@@ -738,7 +855,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <widget class="QLabel" name="Equation1_3">
      <property name="geometry">
       <rect>
-       <x>450</x>
+       <x>480</x>
        <y>80</y>
        <width>16</width>
        <height>21</height>
@@ -751,20 +868,18 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <widget class="QComboBox" name="loxDP2Combo">
      <property name="geometry">
       <rect>
-       <x>460</x>
+       <x>490</x>
        <y>80</y>
-       <width>76</width>
+       <width>101</width>
        <height>21</height>
       </rect>
      </property>
+     <property name="minimumContentsLength">
+      <number>10</number>
+     </property>
      <item>
       <property name="text">
-       <string>CHPT1(psi)</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>CHPT2(psi)</string>
+       <string>&lt;no item&gt;</string>
       </property>
      </item>
     </widget>
@@ -784,7 +899,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <widget class="QLabel" name="Equation1_4">
      <property name="geometry">
       <rect>
-       <x>540</x>
+       <x>590</x>
        <y>80</y>
        <width>16</width>
        <height>21</height>
@@ -860,7 +975,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <property name="geometry">
       <rect>
        <x>650</x>
-       <y>60</y>
+       <y>30</y>
        <width>171</width>
        <height>20</height>
       </rect>
@@ -876,7 +991,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <property name="geometry">
       <rect>
        <x>830</x>
-       <y>60</y>
+       <y>30</y>
        <width>71</width>
        <height>21</height>
       </rect>
@@ -886,7 +1001,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <property name="geometry">
       <rect>
        <x>650</x>
-       <y>80</y>
+       <y>50</y>
        <width>171</width>
        <height>20</height>
       </rect>
@@ -902,7 +1017,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <property name="geometry">
       <rect>
        <x>650</x>
-       <y>100</y>
+       <y>70</y>
        <width>171</width>
        <height>20</height>
       </rect>
@@ -918,7 +1033,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <property name="geometry">
       <rect>
        <x>830</x>
-       <y>80</y>
+       <y>50</y>
        <width>71</width>
        <height>21</height>
       </rect>
@@ -928,7 +1043,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <property name="geometry">
       <rect>
        <x>830</x>
-       <y>100</y>
+       <y>70</y>
        <width>71</width>
        <height>21</height>
       </rect>
@@ -938,7 +1053,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <property name="geometry">
       <rect>
        <x>910</x>
-       <y>60</y>
+       <y>30</y>
        <width>41</width>
        <height>20</height>
       </rect>
@@ -951,7 +1066,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <property name="geometry">
       <rect>
        <x>910</x>
-       <y>80</y>
+       <y>50</y>
        <width>41</width>
        <height>20</height>
       </rect>
@@ -964,7 +1079,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <property name="geometry">
       <rect>
        <x>910</x>
-       <y>100</y>
+       <y>70</y>
        <width>41</width>
        <height>20</height>
       </rect>
@@ -1032,7 +1147,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <property name="geometry">
       <rect>
        <x>910</x>
-       <y>170</y>
+       <y>120</y>
        <width>41</width>
        <height>20</height>
       </rect>
@@ -1044,20 +1159,15 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <widget class="QComboBox" name="fuelDP2Combo">
      <property name="geometry">
       <rect>
-       <x>460</x>
+       <x>490</x>
        <y>190</y>
-       <width>76</width>
+       <width>101</width>
        <height>21</height>
       </rect>
      </property>
      <item>
       <property name="text">
-       <string>CHPT1(psi)</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>CHPT2(psi)</string>
+       <string>&lt;no item&gt;</string>
       </property>
      </item>
     </widget>
@@ -1065,7 +1175,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <property name="geometry">
       <rect>
        <x>630</x>
-       <y>210</y>
+       <y>160</y>
        <width>191</width>
        <height>20</height>
       </rect>
@@ -1080,7 +1190,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <widget class="QLabel" name="Equation1_5">
      <property name="geometry">
       <rect>
-       <x>450</x>
+       <x>480</x>
        <y>190</y>
        <width>16</width>
        <height>21</height>
@@ -1094,7 +1204,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <property name="geometry">
       <rect>
        <x>830</x>
-       <y>210</y>
+       <y>160</y>
        <width>71</width>
        <height>21</height>
       </rect>
@@ -1104,7 +1214,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <property name="geometry">
       <rect>
        <x>910</x>
-       <y>190</y>
+       <y>140</y>
        <width>41</width>
        <height>20</height>
       </rect>
@@ -1117,7 +1227,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <property name="geometry">
       <rect>
        <x>650</x>
-       <y>190</y>
+       <y>140</y>
        <width>171</width>
        <height>20</height>
       </rect>
@@ -1134,13 +1244,13 @@ li.checked::marker { content: &quot;\2612&quot;; }
       <rect>
        <x>370</x>
        <y>190</y>
-       <width>76</width>
+       <width>101</width>
        <height>21</height>
       </rect>
      </property>
      <item>
       <property name="text">
-       <string>OIPT(psi)</string>
+       <string>&lt;no item&gt;</string>
       </property>
      </item>
     </widget>
@@ -1148,7 +1258,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <property name="geometry">
       <rect>
        <x>650</x>
-       <y>170</y>
+       <y>120</y>
        <width>171</width>
        <height>20</height>
       </rect>
@@ -1164,7 +1274,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <property name="geometry">
       <rect>
        <x>910</x>
-       <y>210</y>
+       <y>160</y>
        <width>41</width>
        <height>20</height>
       </rect>
@@ -1216,7 +1326,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <property name="geometry">
       <rect>
        <x>830</x>
-       <y>170</y>
+       <y>120</y>
        <width>71</width>
        <height>21</height>
       </rect>
@@ -1226,7 +1336,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <property name="geometry">
       <rect>
        <x>830</x>
-       <y>190</y>
+       <y>140</y>
        <width>71</width>
        <height>21</height>
       </rect>
@@ -1255,7 +1365,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <widget class="QLabel" name="Equation1_8">
      <property name="geometry">
       <rect>
-       <x>540</x>
+       <x>590</x>
        <y>190</y>
        <width>16</width>
        <height>21</height>
@@ -1294,7 +1404,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <widget class="QLineEdit" name="loxCustomDP1">
      <property name="geometry">
       <rect>
-       <x>340</x>
+       <x>370</x>
        <y>110</y>
        <width>101</width>
        <height>21</height>
@@ -1310,7 +1420,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <widget class="QLineEdit" name="loxCustomDP2">
      <property name="geometry">
       <rect>
-       <x>460</x>
+       <x>490</x>
        <y>110</y>
        <width>101</width>
        <height>21</height>
@@ -1323,7 +1433,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <widget class="QLineEdit" name="fuelCustomDP1">
      <property name="geometry">
       <rect>
-       <x>340</x>
+       <x>370</x>
        <y>220</y>
        <width>101</width>
        <height>21</height>
@@ -1339,7 +1449,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <widget class="QLineEdit" name="fuelCustomDP2">
      <property name="geometry">
       <rect>
-       <x>460</x>
+       <x>490</x>
        <y>220</y>
        <width>101</width>
        <height>21</height>
@@ -1719,6 +1829,143 @@ li.checked::marker { content: &quot;\2612&quot;; }
       <set>Qt::AlignmentFlag::AlignCenter</set>
      </property>
     </widget>
+    <widget class="QLabel" name="label_32">
+     <property name="geometry">
+      <rect>
+       <x>840</x>
+       <y>10</y>
+       <width>51</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>LOX</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_33">
+     <property name="geometry">
+      <rect>
+       <x>840</x>
+       <y>100</y>
+       <width>51</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>FUEL</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="AvgMRBox">
+     <property name="geometry">
+      <rect>
+       <x>850</x>
+       <y>220</y>
+       <width>71</width>
+       <height>21</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_35">
+     <property name="geometry">
+      <rect>
+       <x>640</x>
+       <y>220</y>
+       <width>91</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>MR Calculator:</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="loxCdACombo">
+     <property name="geometry">
+      <rect>
+       <x>740</x>
+       <y>200</y>
+       <width>81</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>LOX Sys</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>LOX Inj</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>LOX Venturi</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="fuelCdACombo">
+     <property name="geometry">
+      <rect>
+       <x>740</x>
+       <y>240</y>
+       <width>81</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Fuel Sys</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Fuel Inj</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Fuel FM</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLabel" name="Equals_3">
+     <property name="geometry">
+      <rect>
+       <x>830</x>
+       <y>220</y>
+       <width>21</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string> =</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line">
+     <property name="geometry">
+      <rect>
+       <x>740</x>
+       <y>220</y>
+       <width>81</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Shadow::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Orientation::Horizontal</enum>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="modelTab">
     <attribute name="title">
@@ -1853,4 +2100,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
  </customwidgets>
  <resources/>
  <connections/>
+ <buttongroups>
+  <buttongroup name="fuelbuttongroup"/>
+  <buttongroup name="oxbuttongroup"/>
+ </buttongroups>
 </ui>

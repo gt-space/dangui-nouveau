@@ -9,8 +9,8 @@ class DataCalcs(QMainWindow, Ui_MainWindow):
         self.loxRhoBox.setPlaceholderText(self.loxDensity.toPlainText())
         self.fuelRhoBox.setPlaceholderText(self.fuelDensity.toPlainText())
 
-    def getData(self):
-
+    def getData(self, dataIsSet):
+        
         self.loxRhoBox.setPlaceholderText(self.loxDensity.toPlainText())
         self.fuelRhoBox.setPlaceholderText(self.fuelDensity.toPlainText())
 
@@ -18,12 +18,14 @@ class DataCalcs(QMainWindow, Ui_MainWindow):
             # sys and inj mdots
         self.loxp1 = self.findData('OIPT(psi)') # 'loxp1' contains a header, loxp1 is a numpy array of corresponding values
         self.loxp2 = self.findData('CHPT1(psi)') 
-        self.fuelp1 = self.findData('OIPT(psi)')
+        self.fuelp1 = self.findData('FIPT(psi)')
         self.fuelp2 = self.findData('CHPT1(psi)')
         self.ODP = self.findData('ODP(psi)')
 
         self.OTPT = self.findData('OTPT(psi)')
+        self.FTPT = self.findData('FTPT(psi)')
         self.OIPT = self.findData('OIPT(psi)')
+        self.FIPT = self.findData('FIPT(psi)')
         self.CHPT = self.findData('CHPT1(psi)')
 
         self.loxSysCda = float(self.loxSysBox.toPlainText())
@@ -50,10 +52,19 @@ class DataCalcs(QMainWindow, Ui_MainWindow):
         if self.fuelSysCdACombo.currentText() == 'InjCdA':
             self.fuelCusCda = float(self.fuelInjBox.toPlainText())
         else: # SysCdA
-            self.fuelCusCda = float(self.fuelSysBox.toPlainText())
-  
+            self.fuelCusCda = float(self.fuelSysBox.toPlainText())  
 
-    def solver(self):
+        dataIsGet = True
+        return dataIsGet
+
+    def solver(self, dataIsSet, dataIsGet):
+        if dataIsSet == False:
+            print("dude ur like 2 steps too early go back to the Main tab and fucking do it again. bruh")
+            return
+        if dataIsGet == False:
+            print("ay bro press the mf Set Properties button bruh")
+            return
+
         inlet_ID = 0.844 # in
         throat_ID = 0.4375 # in
         inlet_ID2 = np.power(inlet_ID / 39.37 / 2, 2) # pre-processing inletID value
@@ -66,7 +77,7 @@ class DataCalcs(QMainWindow, Ui_MainWindow):
         
         self.fuelSysMdot = self.fuelSysCda/100**2 * np.sqrt(2* self.fuelRho * np.abs(self.fuelp1-self.fuelp2)*6895) #
         self.fuelInjMdot = self.fuelInjCda/100**2 * np.sqrt(2* self.fuelRho * np.abs(self.fuelp1-self.fuelp2)*6895) #
-            # these lowk may be a factor of 10 off
+        self.fuelVenMdot = self.findData('FLOW(kg/s)') # just draw values from coriolis data when it exists. may need to concern ourselves with venturi when Darcy
 
         # calculating and setting average values
         # TODO figure out how the averaging works for MATLAB
@@ -76,7 +87,7 @@ class DataCalcs(QMainWindow, Ui_MainWindow):
         
         self.fuelMdotSysAvg.setText(str(round(np.average(self.fuelSysMdot),3)))
         self.fuelMdotInjAvg.setText(str(round(np.average(self.fuelInjMdot),3)))
-
+        self.fuelMdotFlowAvg.setText(str(round(np.average(self.fuelVenMdot),3)))
 
         # calculating CdAs
         # can throw these equations into a helper function if needed
@@ -91,14 +102,44 @@ class DataCalcs(QMainWindow, Ui_MainWindow):
         self.loxInjCdaSysAvg.setText(str(round(np.average(self.loxInjCdaSys),3))) 
         self.loxInjCdaVenAvg.setText(str(round(np.average(self.loxInjCdaVen),3))) 
 
+         # can throw these equations into a helper function if needed
+        self.fuelSysCdaInj = self.fuelInjMdot / (np.sqrt(2*self.fuelRho * np.abs((self.FTPT-self.FIPT)+1)*6895))*100**2 # cm^2, Sys CdA using venturi Mdot and pressure drop across system
+        self.fuelSysCdaVen = self.fuelVenMdot / (np.sqrt(2*self.fuelRho * np.abs((self.FTPT-self.FIPT)+1)*6895))*100**2 # cm^2, Sys CdA using Mdot from injector and pressure drop across system 
+        self.fuelInjCdaSys = self.fuelSysMdot / (np.sqrt(2*self.fuelRho * np.abs((self.FTPT-self.FIPT)+1)*6895))*100**2
+        self.fuelInjCdaVen = self.fuelInjMdot / (np.sqrt(2*self.fuelRho * np.abs((self.FTPT-self.FIPT)+1)*6895))*100**2
+
+        # calculating and setting average values
+        self.fuelSysCdaInjAvg.setText(str(round(np.average(self.fuelSysCdaInj),3))) 
+        self.fuelSysCdaVenAvg.setText(str(round(np.average(self.fuelSysCdaVen),3))) 
+        self.fuelInjCdaSysAvg.setText(str(round(np.average(self.fuelInjCdaSys),3))) 
+        self.fuelInjCdaVenAvg.setText(str(round(np.average(self.fuelInjCdaVen),3))) 
+
         # set internally for future calcs
         self.loxInjMdot = self.loxInjCdaSys / 100**2 * np.sqrt(2*self.loxRho*np.abs(self.OIPT-self.CHPT)*6895)
+
+        O_MR = 0
+        F_MR = 1
+        # find MR
+        if self.loxCdACombo.currentText()=="LOX Sys":
+            O_MR = float(self.loxMdotSysAvg.text())
+        elif self.loxCdACombo.currentText()=="LOX Inj":
+            O_MR = float(self.loxMdotInjAvg.text())
+        elif self.loxCdACombo.currentText()=="LOX Venturi":
+            O_MR = float(self.loxMdotVenAvg.text())
+        if self.fuelCdACombo.currentText()=="Fuel Sys":
+            F_MR = float(self.fuelMdotSysAvg.text())
+        elif self.fuelCdACombo.currentText()=="Fuel Inj":
+            F_MR = float(self.fuelMdotInjAvg.text())
+        elif self.fuelCdACombo.currentText()=="Fuel FM":
+            F_MR = float(self.fuelMdotFlowAvg.text())
+        MR = O_MR/F_MR
+        self.AvgMRBox.setText(str(round(MR,3)))
 
         # custom equations
         if self.loxGraphCheck.isChecked() or self.loxAppendCheck.isChecked():
             
             self.loxCusMdot = self.loxCusCda/100**2 * np.sqrt(2* self.loxRho * np.abs(self.loxp1Cus-self.loxp2Cus)*6895)
-            self.fuelCusMdot = self.fuelCusCda/100**2 * np.sqrt(2* self.fuelRho * np.abs(self.loxp1Cus-self.loxp2Cus)*6895)
+            self.fuelCusMdot = self.fuelCusCda/100**2 * np.sqrt(2* self.fuelRho * np.abs(self.fuelp1Cus-self.fuelp2Cus)*6895)
 
             print('SUCCESSFUL CUSTOM CALCS')
 
