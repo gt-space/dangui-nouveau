@@ -9,7 +9,7 @@ times = 0
 headers = 0
 data = 0
 filename = "<filename>"
-lastclickedplot = "<plot>"
+lastclickedplot = "<plot>" 
 
 # Reads input .csv and converts it to useful .txt
 class LoadData(QMainWindow, Ui_MainWindow):

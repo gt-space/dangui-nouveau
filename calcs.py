@@ -104,7 +104,8 @@ class DataCalcs(QMainWindow, Ui_MainWindow):
 
         print("SUCCESSFUL CALCS")
 
-        
+        # loxRho is not set to custom
+        # figure out difference between custom and automatic calcs
 
         # np.savetxt("loxSysMdotPython.csv", loxSysMdot, delimiter=",")
 

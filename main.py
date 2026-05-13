@@ -8,12 +8,12 @@ from gui import Ui_MainWindow
 from load import LoadData
 from plots import PlotWindow
 from calcs import DataCalcs
+from controlLoop import HETSModel
 
 from PyQt6.QtWidgets import QApplication, QMainWindow, QFileDialog, QPushButton
 from PyQt6 import QtCore
 import pyqtgraph as pg
 
-#test 
 
 QMainWindow, Ui_MainWindow = pg.Qt.loadUiType("DANGUI-GUI/form.ui")
 
@@ -35,6 +35,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.headers = None
         self.data = None
+
+        self.dualThrottleButton.clicked.connect(self.HETSDualThrottle)
 
     # All buttons
     def selectButtonPushed(self):
@@ -78,6 +80,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             foundData = self.data[:,idx:idx+1]
 
         return foundData
+    
+
+    # FLUID MODEL
+
+    def HETSDualThrottle(self):
+        HETSModel.dualThrottle(self) 
+
 
 
 # Executing the app
