@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>DANGUI Nouveau v0.0</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>dangui (1).ico</normaloff>dangui (1).ico</iconset>
+  </property>
   <widget class="QTabWidget" name="DANGUI">
    <property name="geometry">
     <rect>

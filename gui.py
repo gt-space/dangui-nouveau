@@ -13,6 +13,9 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(960, 540)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(".\\DANGUI-GUI\\dangui (1).ico"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+        MainWindow.setWindowIcon(icon)
         self.DANGUI = QtWidgets.QTabWidget(parent=MainWindow)
         self.DANGUI.setGeometry(QtCore.QRect(0, 0, 961, 601))
         self.DANGUI.setAutoFillBackground(False)
