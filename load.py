@@ -5,6 +5,8 @@ from gui import Ui_MainWindow
 from plots import PlotWindow
 from PyQt6.QtWidgets import QApplication, QMainWindow, QFileDialog, QPushButton
 
+import matplotlib.pyplot as plt
+
 times = 0
 headers = 0
 data = 0
@@ -51,7 +53,7 @@ class LoadData(QMainWindow, Ui_MainWindow):
             # Make scroll area the list of sensors
             j = 0 # index for combo box set
             for i in range(len(headers)-1):
-                thisheader = headers[i+1]
+                thisheader = headers[i] # prev i+1, but that skipped over CHPT1 when iterating 
                 self.sensorList.addItem(thisheader)
                 if thisheader[-5:] == '(psi)':
                     j += 1
@@ -63,8 +65,9 @@ class LoadData(QMainWindow, Ui_MainWindow):
                         self.loxDP1Combo.setCurrentIndex(j)
                     if thisheader == 'FTPT(psi)':
                         self.fuelDP1Combo.setCurrentIndex(j)
-                    if thisheader == 'CHPT1(psi)' or (thisheader == 'CHPT2(psi)' and headers[i] != 'CHPT1(psi)'):
+                    if thisheader == 'CHPT1(psi)' or (thisheader == 'CHPT2(psi)' and ('CHPT1(psi)' not in headers)):
                         # kinda convoluted, ideally the one before chpt2 is always chpt, unless theres no chpt
+                        # it lowk didn't identify the second case correctly so i changed it a lil
                         self.loxDP2Combo.setCurrentIndex(j)
                         self.fuelDP2Combo.setCurrentIndex(j)
         else:
@@ -113,3 +116,17 @@ class LoadData(QMainWindow, Ui_MainWindow):
 
     def matplotSensors(self, clickedItem):
         return times, data[clickedItem.text()], clickedItem.text()
+
+
+# opens plot of custom data---uses set time data
+# WHAT IF THERE ARE TWO GRAPHS -- make each instance create a new graph except i don't remember matplotlib
+def plotCustom(y, data):
+    fig = plt.figure()
+    plt.plot(times, data)
+    plt.xlabel('time')
+    plt.ylabel(y)
+    plt.show()
+
+    print("GRAPHED " + y + " SUCCESSFULLY")
+    print(data)
+    return fig

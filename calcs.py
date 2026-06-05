@@ -1,7 +1,9 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 from gui import Ui_MainWindow
 from PyQt6.QtWidgets import QApplication, QMainWindow, QFileDialog, QPushButton
+from load import plotCustom
 
 class DataCalcs(QMainWindow, Ui_MainWindow):
 
@@ -13,6 +15,16 @@ class DataCalcs(QMainWindow, Ui_MainWindow):
         
         self.loxRhoBox.setPlaceholderText(self.loxDensity.toPlainText())
         self.fuelRhoBox.setPlaceholderText(self.fuelDensity.toPlainText())
+
+        # to handle custom equation density based on whether user inputted data or just used main page density
+        if self.loxRhoBox.text() == '':
+            self.loxRhoCustom = float(self.loxRhoBox.placeholderText())
+        else:
+            self.loxRhoCustom = float(self.loxRhoBox.text()) # custom equation lox density, for some reason i made this a QLineEdit instead ¯\_(ツ)_/¯
+        if self.fuelRhoBox.text() == '':
+            self.fuelRhoCustom = float(self.loxRhoBox.placeholderText())
+        else:
+            self.fuelRhoCustom = float(self.fuelRhoBox.text()) # custom equation fuel density 
 
         # getting values for automatic equations 
             # sys and inj mdots
@@ -27,7 +39,6 @@ class DataCalcs(QMainWindow, Ui_MainWindow):
         self.OIPT = self.findData('OIPT(psi)')
         self.FIPT = self.findData('FIPT(psi)')
         self.CHPT = self.findData('CHPT1(psi)')
-
         self.loxSysCda = float(self.loxSysBox.toPlainText())
         self.loxInjCda = float(self.loxInjBox.toPlainText())
         self.loxRho = float(self.loxDensity.toPlainText())
@@ -136,22 +147,30 @@ class DataCalcs(QMainWindow, Ui_MainWindow):
         self.AvgMRBox.setText(str(round(MR,3)))
 
         # custom equations
+        # note that each time you edit custom equation, you have to re-set it
         if self.loxGraphCheck.isChecked() or self.loxAppendCheck.isChecked():
             
-            self.loxCusMdot = self.loxCusCda/100**2 * np.sqrt(2* self.loxRho * np.abs(self.loxp1Cus-self.loxp2Cus)*6895)
-            self.fuelCusMdot = self.fuelCusCda/100**2 * np.sqrt(2* self.fuelRho * np.abs(self.fuelp1Cus-self.fuelp2Cus)*6895)
+            self.loxCusMdot = self.loxCusCda/100**2 * np.sqrt(2* self.loxRhoCustom * np.abs(self.loxp1Cus-self.loxp2Cus)*6895)
+            self.fuelCusMdot = self.fuelCusCda/100**2 * np.sqrt(2* self.fuelRhoCustom * np.abs(self.fuelp1Cus-self.fuelp2Cus)*6895)
+
+            # always append to output (see how matlab does it)
+            # TODO DENSITY ISN'T CUSTOM
+            # TODO if custom equation was edited and set wasn't pressed again, print error
+            
+            if self.loxGraphCheck.isChecked():
+                plotCustom('LOX Mdot', self.loxCusMdot)
+                print(self.loxDP1Combo.currentText())
+                plt.show()
+            if self.fuelGraphCheck.isChecked():
+                plotCustom('Fuel Mdot', self.fuelCusMdot)
+                plt.show()
 
             print('SUCCESSFUL CUSTOM CALCS')
 
         print("SUCCESSFUL CALCS")
 
         
-
         # np.savetxt("loxSysMdotPython.csv", loxSysMdot, delimiter=",")
 
 
-# TODO
-    # create a clean version of outputs + appended to a copy of input file
-        # DO NOT CORRUPT ORIGINAL FILE
-    # VERIFY CALCULATIONS
-        # figure out what the densities are for MATLAB version so you can check if they line up
+
