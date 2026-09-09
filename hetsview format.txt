@@ -1,0 +1,10 @@
+x, y
+x, y
+x, y
+[...]
+x, y
+'graph title'
+'x-axis label'
+'y-axis label'
+'line style'
+'notes'
