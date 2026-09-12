@@ -29,6 +29,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.selectDataButton.clicked.connect(self.selectButtonPushed)
         self.loadDataButton.clicked.connect(self.loadButtonPushed)
         self.setDataButton.clicked.connect(self.setButtonPushed)
+        self.saveDataButton.clicked.connect(self.saveButtonPushed)
         self.sensorList.itemClicked.connect(self.sensorListPushed)
         self.sensorList.itemDoubleClicked.connect(self.sensorListDoubleClicked)
         self.fuelbuttongroup.buttonClicked.connect(self.fuelbuttongroupClicked)
@@ -71,6 +72,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         data = LoadData.setData(self) # setData returns data without timestamps
         self.data = data.to_numpy() # converst pd frame to np array
         dataIsSet = True
+
+    def saveButtonPushed(self):
+            global dataIsSelect, dataIsLoad, dataIsSet, dataIsGet
+            if dataIsLoad == False:
+                if dataIsSelect == True:
+                    print("You have not loaded your most recently selected data. Click the Load Data button.")
+                    return
+                else:
+                    print("Select Data first.")
+                    return
+            LoadData.saveData(self) # setData returns data without timestamps
 
     def sensorListPushed(self, clickedItem):
         LoadData.plotSensors(self, clickedItem)

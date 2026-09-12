@@ -1,4 +1,5 @@
 import os
+import shutil
 import numpy as np
 import pandas as pd
 from gui import Ui_MainWindow
@@ -104,6 +105,23 @@ class LoadData(QMainWindow, Ui_MainWindow):
             self.centralPlot.plot(times, data[lastclickedplot])
 
         print('DATA HAS BEEN SET')
+
+        return data
+
+    def saveData(self):
+        global times, data
+        dir = './test'
+        if os.path.exists(dir):
+            shutil.rmtree(dir)
+        os.makedirs(dir)
+        for name, dataset in data.items():
+            print(name)
+            pd_data = pd.concat([times, dataset], axis=1)
+            output = pd_data.to_numpy()
+            np.savetxt('./test/' + name + '.plt', output, delimiter=', ', fmt='%s',
+                       footer='Plot\nTime (s)\n' + name + '\nr*\nnote check')
+
+        print('DATA HAS BEEN SAVED')
 
         return data
     

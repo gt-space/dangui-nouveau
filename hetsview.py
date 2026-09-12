@@ -337,7 +337,7 @@ class hetsview:
     def import_data(self):
         file_path = filedialog.askopenfilename(
             title="Select a text file",
-            filetypes=[("Text files", "*.txt"), ("CSV files", "*.csv"), ("All files", "*.*")])
+            filetypes=[("Plot files", "*.plt"), ("Text files", "*.txt"), ("CSV files", "*.csv"), ("All files", "*.*")])
         if file_path:
             self.process_and_plot(file_path)
 

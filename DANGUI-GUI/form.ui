@@ -101,7 +101,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>&lt;button&gt;</string>
+      <string>Save Data</string>
      </property>
      <property name="default">
       <bool>false</bool>
