@@ -78,6 +78,10 @@ class hetsview:
         #tracks whats being editted and prevents control-change callbacks
         self.selected = tk.StringVar()
         self._updating_controls = False
+        self.current_view = "main"
+
+        #tracks if canvas is expanded to full view
+        self.canvas_fullscreen = False
 
         #general axis labeling/storing
         self.base_xlabel = ""
@@ -108,16 +112,16 @@ class hetsview:
 
     #detailing the title bar
     def _build_title_bar(self):
-        top = ttk.Frame(self.root)
-        top.grid(row=0, column=0, sticky="ew", padx=15, pady=(15, 10))
-        top.columnconfigure(0, weight=1) #title size
-        top.columnconfigure(1, weight=0) #buttons don't change size
+        self.top_frame = ttk.Frame(self.root)
+        self.top_frame.grid(row=0, column=0, sticky="ew", padx=15, pady=(15, 10))
+        self.top_frame.columnconfigure(0, weight=1) #title size
+        self.top_frame.columnconfigure(1, weight=0) #buttons don't change size
 
-        title_lbl = tk.Label(top, text="hetsview", font=("Consolas", 26, "bold"),
+        title_lbl = tk.Label(self.top_frame, text="hetsview", font=("Consolas", 26, "bold"),
                              bg=bgColor, fg=fgColor, anchor="w")
         title_lbl.grid(row=0, column=0, sticky="w")
 
-        btn_frame = ttk.Frame(top)
+        btn_frame = ttk.Frame(self.top_frame)
         btn_frame.grid(row=0, column=1, sticky="e")
 
         #import data opens file selector and plots
@@ -142,37 +146,115 @@ class hetsview:
 
     #building the actual canvas + layout
     def _build_canvas(self, parent):
-        #determining canvas size
         canvas_container = ttk.Frame(parent)
         canvas_container.grid(row=0, column=0, sticky="nsew", padx=(0, 10))
-        canvas_container.rowconfigure(1, weight=1)
+        canvas_container.rowconfigure(2, weight=1)
         canvas_container.columnconfigure(0, weight=1)
 
         self.toolbar_frame = ttk.Frame(canvas_container)
         self.toolbar_frame.grid(row=0, column=0, sticky="ew")
 
-        self.canvas_frame = ttk.Frame(canvas_container)
-        self.canvas_frame.grid(row=1, column=0, sticky="nsew")
+        self.view_tabs = ttk.Notebook(canvas_container)
+        self.view_tabs.grid(row=1, column=0, sticky="ew")
+        self.view_tabs.bind("<<NotebookTabChanged>>", self._on_view_changed)
 
-        '''plotting with matplotlib but still leaving extra space
-        for readability and space for the axis titles'''
+        main_tab = ttk.Frame(self.view_tabs)
+        self.view_tabs.add(main_tab, text="main")
+
+        self.canvas_frame = ttk.Frame(canvas_container)
+        self.canvas_frame.grid(row=2, column=0, sticky="nsew")
+
         self.fig, self.ax = plt.subplots(dpi=100)
         self.fig.subplots_adjust(bottom=0.25, left=0.2)
 
-        #placeholder title
         self.ax.set_title("No Data To Display", fontsize=12, color=subColor)
-        self.ax.grid(True, linestyle='--', linewidth=0.5, alpha=0.4)
+        self.ax.grid(True, linestyle="--", linewidth=0.5, alpha=0.4)
 
-        #standard matplotlib tools + putting inside tkinter widget
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.canvas_frame)
-        self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+        self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
 
         self.toolbar = NavigationToolbar2Tk(self.canvas, self.toolbar_frame)
         self.toolbar.config(bg=bgColor, bd=0, highlightthickness=0)
         self.toolbar.update()
 
-        #allows for editting plots by clicking on it
-        self.canvas.mpl_connect('pick_event', self._on_pick)
+        #button to recenter plot view next to toolbar items
+        self.btn_reset_view = ttk.Button(self.toolbar, text="Reset View", command=self.reset_view,
+                                        bootstyle="secondary-outline")
+        self.btn_reset_view.pack(side=tk.LEFT, padx=(10, 4), pady=2)
+
+        #button to expand canvas to fill window
+        self.btn_fullscreen = ttk.Button(self.toolbar, text="Full Canvas", command=self.toggle_canvas_fullscreen,
+                                        bootstyle="secondary-outline")
+        self.btn_fullscreen.pack(side=tk.LEFT, padx=(4, 4), pady=2)
+
+        #collapses back to normal layout
+        self.btn_exit_fullscreen = tk.Button(self.toolbar, text="X", bg="#5c5c5c", fg="white", bd=0,
+                                             padx=8, pady=2, font=("Consolas", 9, "bold"),
+                                             command=self.toggle_canvas_fullscreen)
+
+        self.canvas.mpl_connect("pick_event", self._on_pick)
+
+    #toggles between full canvas view and normal layout
+    def toggle_canvas_fullscreen(self):
+        self.canvas_fullscreen = not self.canvas_fullscreen
+        if self.canvas_fullscreen:
+            self.top_frame.grid_remove()
+            self.bottom_frame.grid_remove()
+            self.notes_outer.grid_remove()
+            self.middle_frame.grid_configure(padx=5, pady=5)
+            self.middle_frame.columnconfigure(1, weight=0)
+            self.btn_exit_fullscreen.pack(side=tk.RIGHT, padx=6, pady=2)
+        else:
+            self.top_frame.grid()
+            self.bottom_frame.grid()
+            self.notes_outer.grid()
+            self.middle_frame.grid_configure(padx=15, pady=(0, 10))
+            self._update_sidebar_state()
+            self.btn_exit_fullscreen.pack_forget()
+        self.canvas.draw_idle()
+
+    #recenters view and fits data back onto the canvas
+    def reset_view(self):
+        self.toolbar.home()
+        self.ax.relim()
+        self.ax.autoscale()
+        self.canvas.draw_idle()
+
+    #switching tabs to filter single or overlaid plots
+    def _on_view_changed(self, event=None):
+        tab_id = self.view_tabs.select()
+        if not tab_id:
+            return
+        tab_text = self.view_tabs.tab(tab_id, "text")
+        self.current_view = tab_text
+        if tab_text in self.lines:
+            self.selected.set(tab_text)
+            self._on_selection_change()
+        self._apply_view()
+        self._refresh_notepads()
+
+    #adds a tab for each imported plot
+    def _add_plot_tab(self, filename):
+        for tab_id in self.view_tabs.tabs():
+            if self.view_tabs.tab(tab_id, "text") == filename:
+                return
+        tab_frame = ttk.Frame(self.view_tabs)
+        self.view_tabs.add(tab_frame, text=filename)
+
+    #shows only the active tab's plot or shows all on main
+    def _apply_view(self):
+        for name, data in self.lines.items():
+            if self.current_view == "main":
+                is_visible = data.get("visible", True)
+            else:
+                is_visible = (name == self.current_view) and data.get("visible", True)
+
+            data["line"].set_visible(is_visible)
+            for artist in data.get("minmax_artists", []):
+                artist.set_visible(is_visible and data.get("minmax", False))
+
+        self._refresh_legend()
+        self.canvas.draw_idle()
 
     #making the notepad widget (coolest part imo)
     def _build_notes(self, parent):
@@ -244,8 +326,61 @@ class hetsview:
                         command=lambda: self.toggle_notepad(content_frame))
         btn.pack(side=tk.RIGHT, padx=4, pady=4)
 
+        #save button to write notes to file
+        btn_save = tk.Button(title_bar, text="Save", bg="#4a4a4a", fg="white", bd=0,
+                             font=("Consolas", 8), command=lambda n=name: self.save_notes_to_file(n))
+        btn_save.pack(side=tk.RIGHT, padx=(0, 2), pady=4)
+
         #updating .notes to update it
-        self.notepads[name] = {"frame": pad_frame, "text": text_area, "content": content_frame}
+        self.notepads[name] = {
+            "frame": pad_frame,
+            "text": text_area,
+            "content": content_frame
+        }
+
+        self._refresh_notepads()
+        self._update_sidebar_state()
+
+    #saves notes back into the original plt file
+    def save_notes_to_file(self, name):
+        if name not in self.lines:
+            return
+        data = self.lines[name]
+        file_path = data.get("file_path")
+        if not file_path or not os.path.exists(file_path):
+            messagebox.showerror("Error", f"File for {name} could not be located.")
+            return
+
+        new_notes = self.notepads[name]["text"].get("1.0", tk.END).strip()
+        data["notes"] = new_notes
+
+        try:
+            with open(file_path, 'r') as f:
+                lines = f.read().splitlines()
+
+            if len(lines) < 5:
+                raise ValueError("File does not contain the 5 metadata lines.")
+
+            #flattens line breaks to maintain 5 line metadata structure
+            flat_notes = " ".join(new_notes.splitlines())
+            had_quotes = lines[-1].strip().startswith("'") and lines[-1].strip().endswith("'")
+            lines[-1] = f"'{flat_notes}'" if had_quotes else flat_notes
+
+            with open(file_path, 'w') as f:
+                f.write("\n".join(lines) + "\n")
+
+            messagebox.showinfo("Saved", f"Notes successfully saved to {name}")
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to save notes: {e}")
+
+    #only shows notepads for the active plot tab
+    def _refresh_notepads(self):
+        for name, pad in self.notepads.items():
+            if self.current_view == "main" or name == self.current_view:
+                pad["frame"].pack(side=tk.TOP, fill=tk.X, padx=2, pady=4)
+            else:
+                pad["frame"].pack_forget()
+        self._update_sidebar_state()
 
     #prevents notepad from collasping when nothing is actively adjusting it
     def _resize_notepad(self, event, frame):
@@ -280,10 +415,9 @@ class hetsview:
             for data in self.notepads.values():
                 title_bar = data["frame"].winfo_children()[0]
                 children = title_bar.winfo_children()
-                if len(children) >= 2:
-                    w = children[0].winfo_reqwidth() + children[1].winfo_reqwidth() + 40
-                    if w > max_w:
-                        max_w = w
+                w = sum(c.winfo_reqwidth() for c in children) + 40
+                if w > max_w:
+                    max_w = w
             self.notes_canvas.config(width=max_w)
 
     def _on_notes_edited_specific(self, name, text_area):
@@ -292,57 +426,82 @@ class hetsview:
 
     #building control panel for plot editting
     def _build_control_panel(self):
-        bottom = ttk.LabelFrame(self.root, text="Graph Controls")
-        bottom.grid(row=2, column=0, sticky="nsew", padx=15, pady=(0, 15))
+        self.bottom_frame = ttk.LabelFrame(self.root, text="Graph Controls")
+        self.bottom_frame.grid(row=2, column=0, sticky="nsew", padx=15, pady=(0, 15))
         for c in range(8):
-            bottom.columnconfigure(c, weight=1)
-        bottom.rowconfigure(0, weight=1)
-        bottom.rowconfigure(1, weight=1)
+            self.bottom_frame.columnconfigure(c, weight=1)
+        self.bottom_frame.rowconfigure(0, weight=1)
+        self.bottom_frame.rowconfigure(1, weight=1)
 
         #plot selector, color picker, opacity slider
-        ttk.Label(bottom, text="Editing:").grid(row=0, column=0, sticky="w", padx=(10, 5), pady=(8, 4))
-        self.plot_selector = ttk.Combobox(bottom, textvariable=self.selected, state="readonly", width=18)
+        ttk.Label(self.bottom_frame, text="Editing:").grid(row=0, column=0, sticky="w", padx=(10, 5), pady=(8, 4))
+        self.plot_selector = ttk.Combobox(self.bottom_frame, textvariable=self.selected, state="readonly", width=18)
         self.plot_selector.grid(row=0, column=1, sticky="w", pady=(8, 4))
         self.plot_selector.bind("<<ComboboxSelected>>", self._on_selection_change)
 
         #plot color pickers
-        ttk.Label(bottom, text="Color:").grid(row=0, column=2, sticky="w", padx=(20, 5), pady=(8, 4))
-        self.color_swatch = tk.Button(bottom, text="   ", command=self._pick_color,
+        ttk.Label(self.bottom_frame, text="Color:").grid(row=0, column=2, sticky="w", padx=(20, 5), pady=(8, 4))
+        self.color_swatch = tk.Button(self.bottom_frame, text="   ", command=self._pick_color,
                                       bg=subColor, relief="flat", width=4)
         self.color_swatch.grid(row=0, column=3, sticky="w", pady=(8, 4))
 
-        ttk.Label(bottom, text="Opacity:").grid(row=0, column=4, sticky="w", padx=(20, 5), pady=(8, 4))
+        ttk.Label(self.bottom_frame, text="Opacity:").grid(row=0, column=4, sticky="w", padx=(20, 5), pady=(8, 4))
         self.opacity_var = tk.DoubleVar(value=1.0)
-        self.opacity_scale = ttk.Scale(bottom, from_=0.05, to=1.0, variable=self.opacity_var,
+        self.opacity_scale = ttk.Scale(self.bottom_frame, from_=0.05, to=1.0, variable=self.opacity_var,
                                        orient="horizontal", command=self._on_opacity_change,
                                        bootstyle="light")
         self.opacity_scale.grid(row=0, column=5, sticky="ew", padx=(0, 10), pady=(8, 4))
 
-        
+        #line width slider
+        ttk.Label(self.bottom_frame, text="Width:").grid(row=0, column=6, sticky="w", padx=(20, 5), pady=(8, 4))
+        self.line_width_var = tk.DoubleVar(value=1.5)
+        self.line_width_scale = ttk.Scale(self.bottom_frame, from_=0.5, to=5.0, variable=self.line_width_var,
+                                          orient="horizontal", command=self._on_line_width_change,
+                                          bootstyle="light")
+        self.line_width_scale.grid(row=0, column=7, sticky="ew", padx=(0, 10), pady=(8, 4))
+
         #toggle switches for markers + min/max
         self.show_points_var = tk.BooleanVar(value=False)
-        self.chk_points = ttk.Checkbutton(bottom, text="Show Data Points", variable=self.show_points_var,
+        self.chk_points = ttk.Checkbutton(self.bottom_frame, text="Show Data Points", variable=self.show_points_var,
                                           command=self._on_points_toggle, bootstyle="round-toggle")
         self.chk_points.grid(row=1, column=0, columnspan=2, sticky="w", padx=10, pady=(4, 8))
 
         self.show_minmax_var = tk.BooleanVar(value=False)
-        self.chk_minmax = ttk.Checkbutton(bottom, text="Show Min/Max", variable=self.show_minmax_var,
+        self.chk_minmax = ttk.Checkbutton(self.bottom_frame, text="Show Min/Max", variable=self.show_minmax_var,
                                           command=self._on_minmax_toggle, bootstyle="round-toggle")
         self.chk_minmax.grid(row=1, column=2, columnspan=2, sticky="w", padx=10, pady=(4, 8))
+
+        #plot visibility toggle
+        self.show_plot_var = tk.BooleanVar(value=True)
+        self.chk_plot = ttk.Checkbutton(self.bottom_frame, text="Show Plot", variable=self.show_plot_var,
+                                        command=self._on_plot_visibility_toggle, bootstyle="round-toggle")
+        self.chk_plot.grid(row=1, column=4, columnspan=2, sticky="w", padx=10, pady=(4, 8))
 
         #if no data, no plot controls
         self._set_controls_state("disabled")
 
-    
     def import_data(self):
-        file_path = filedialog.askopenfilename(
-            title="Select a text file",
-            filetypes=[("Plot files", "*.plt"), ("Text files", "*.txt"), ("CSV files", "*.csv"), ("All files", "*.*")])
-        if file_path:
-            self.process_and_plot(file_path)
+        file_paths = filedialog.askopenfilenames(
+            title="Select PLT files",
+            filetypes=[
+                ("PLT files", "*.plt"),
+                ("All files", "*.*")
+            ]
+        )
+
+        #skips multiple redraws when importing a list of files
+        for file_path in file_paths:
+            self.process_and_plot(file_path, redraw=False)
+
+        if file_paths:
+            self.view_tabs.select(0)
+            self.current_view = "main"
+            self._apply_view()
+            self._refresh_notepads()
+            self.canvas.draw_idle()
 
     #parse data file based on hetsview format.txt
-    def process_and_plot(self, file_path):
+    def process_and_plot(self, file_path, redraw=True):
         x, y = [], []
         try:
             with open(file_path, 'r') as file:
@@ -358,13 +517,18 @@ class hetsview:
             if linestyle not in ['-', '--', '-.', ':']:
                 linestyle = '-'
 
+            #faster comma separation on data rows
             for line in raw_lines[:-5]:
-                if not line.strip():
+                line = line.strip()
+                if not line:
                     continue
-                parts = line.strip().split(',')
-                if len(parts) >= 2:
-                    x.append(float(parts[0]))
-                    y.append(float(parts[1]))
+                comma = line.find(',')
+                if comma != -1:
+                    try:
+                        x.append(float(line[:comma]))
+                        y.append(float(line[comma + 1:]))
+                    except ValueError:
+                        continue
 
             if not x:
                 raise ValueError("No valid data found.")
@@ -394,25 +558,55 @@ class hetsview:
             color = GRAY_CYCLE[self.color_index % len(GRAY_CYCLE)]
             self.color_index += 1
 
-            line, = self.ax.plot(x, y, marker='None', linestyle=linestyle, color=color,
-                                 alpha=1.0, label=title if title else filename, picker=5)
+            line, = self.ax.plot(
+                x,
+                y,
+                marker="None",
+                linestyle=linestyle,
+                color=color,
+                alpha=1.0,
+                linewidth=1.5,
+                label=title if title else filename,
+                picker=5
+            )
 
+            #precalculating min and max to keep toggle quick
+            min_y = min(y)
+            max_y = max(y)
+            min_idx = y.index(min_y)
+            max_idx = y.index(max_y)
+
+            #storing file path so notes can be saved back to disk
             self.lines[filename] = {
-                "line": line, "x": x, "y": y, "color": color, "alpha": 1.0,
-                "markers": False, "minmax": False, "minmax_artists": [], "notes": notes
+                "line": line,
+                "x": x,
+                "y": y,
+                "color": color,
+                "alpha": 1.0,
+                "linewidth": 1.5,
+                "visible": True,
+                "markers": False,
+                "minmax": False,
+                "minmax_artists": [],
+                "notes": notes,
+                "file_path": file_path,
+                "min_idx": min_idx,
+                "max_idx": max_idx
             }
-            
+
+            self._add_plot_tab(filename)
             self.add_notepad(filename, title if title else filename, notes)
             self._refresh_legend()
-            self.canvas.draw()
+
+            if redraw:
+                self.canvas.draw_idle()
 
             self.plot_selector["values"] = list(self.lines.keys())
             self.selected.set(filename)
             self._on_selection_change()
             self._set_controls_state("normal")
-            
             self._update_sidebar_state()
-    
+
         #catch all for malformed files
         except Exception as e:
             messagebox.showerror("Error", f"Failed to process the file: {e}")
@@ -447,23 +641,29 @@ class hetsview:
         self.ax.set_xlabel("")
         self.ax.set_ylabel("")
         self.ax.grid(True, linestyle='--', linewidth=0.5, alpha=0.4)
-        self.canvas.draw()
+        self.canvas.draw_idle()
 
         self.lines.clear()
         self.notepads.clear()
-        
+
         for widget in self.notes_container.winfo_children():
             widget.destroy()
+
+        #resets tabs back to only main
+        for tab_id in self.view_tabs.tabs()[1:]:
+            self.view_tabs.forget(tab_id)
+        self.view_tabs.select(0)
+        self.current_view = "main"
 
         self.color_index = 0
         self.plot_selector["values"] = []
         self.selected.set("")
-        
+
         self.base_xlabel = ""
         self.base_ylabel = ""
         self.extra_xlabels.clear()
         self.extra_ylabels.clear()
-        
+
         for artist in self.extra_text_artists:
             artist.remove()
         self.extra_text_artists.clear()
@@ -488,11 +688,14 @@ class hetsview:
         data = self._current()
         if not data:
             return
+
         self._updating_controls = True
         self.color_swatch.config(bg=data["color"])
         self.opacity_var.set(data["alpha"])
+        self.line_width_var.set(data.get("linewidth", 1.5))
         self.show_points_var.set(data["markers"])
         self.show_minmax_var.set(data["minmax"])
+        self.show_plot_var.set(data.get("visible", True))
         self._updating_controls = False
 
     def _pick_color(self):
@@ -505,7 +708,7 @@ class hetsview:
             data["line"].set_color(hex_color)
             self.color_swatch.config(bg=hex_color)
             self._refresh_legend()
-            self.canvas.draw()
+            self.canvas.draw_idle()
 
     def _on_opacity_change(self, value):
         if self._updating_controls:
@@ -516,7 +719,7 @@ class hetsview:
         alpha = float(value)
         data["alpha"] = alpha
         data["line"].set_alpha(alpha)
-        self.canvas.draw()
+        self.canvas.draw_idle()
 
     def _on_points_toggle(self):
         data = self._current()
@@ -525,7 +728,7 @@ class hetsview:
         show = self.show_points_var.get()
         data["markers"] = show
         data["line"].set_marker('o' if show else 'None')
-        self.canvas.draw()
+        self.canvas.draw_idle()
 
     def _on_minmax_toggle(self):
         data = self._current()
@@ -540,7 +743,7 @@ class hetsview:
 
         if show:
             x, y = data["x"], data["y"]
-            i_max, i_min = y.index(max(y)), y.index(min(y))
+            i_max, i_min = data["max_idx"], data["min_idx"]
             for i, label in ((i_max, "max"), (i_min, "min")):
                 ann = self.ax.annotate(
                     f"{label}: {y[i]:.2f}", xy=(x[i], y[i]),
@@ -552,20 +755,50 @@ class hetsview:
                                        markersize=8, linestyle='None')
                 data["minmax_artists"].extend([ann, marker])
 
-        self.canvas.draw()
+        self.canvas.draw_idle()
 
     def _refresh_legend(self):
-        if self.lines:
-            self.ax.legend(facecolor=darkBgColor, edgecolor=subColor, labelcolor=fgColor)
+        visible_handles_labels = [
+            (h, l) for h, l in zip(*self.ax.get_legend_handles_labels()) if h.get_visible()
+        ]
+        if visible_handles_labels:
+            handles, labels = zip(*visible_handles_labels)
+            self.ax.legend(handles, labels, facecolor=darkBgColor, edgecolor=subColor, labelcolor=fgColor)
         elif self.ax.get_legend():
             self.ax.get_legend().remove()
 
     def _set_controls_state(self, state):
-        self.plot_selector.config(state="readonly" if self.lines else "disabled")
+        self.plot_selector.config(
+            state="readonly" if self.lines else "disabled"
+        )
         self.color_swatch.config(state=state)
         self.opacity_scale.config(state=state)
+        self.line_width_scale.config(state=state)
         self.chk_points.config(state=state)
         self.chk_minmax.config(state=state)
+        self.chk_plot.config(state=state)
+
+    def _on_line_width_change(self, value):
+        if self._updating_controls:
+            return
+
+        data = self._current()
+        if not data:
+            return
+
+        width = float(value)
+        data["linewidth"] = width
+        data["line"].set_linewidth(width)
+        self.canvas.draw_idle()
+
+    def _on_plot_visibility_toggle(self):
+        data = self._current()
+        if not data:
+            return
+
+        data["visible"] = self.show_plot_var.get()
+        self._apply_view()
+
 
 if __name__ == "__main__":
     root = tk.Tk()
